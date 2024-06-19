@@ -1,64 +1,33 @@
-const readline = require('readline-sync');
+const ARITHMETIC_MODE = '1';
+const VOWEL_COUNTING_MODE = '2';
+const userInput = require('./userInput.js');
+const arithmetic = require('./arithemetic');
+const vowelCounting = require('./vowelCounting');
 
 function printWelcomeMessage() {
     console.log('\nWelcome to the calculator!');
     console.log('==========================');
 }
 
-function performOneCalculation() {
-    console.log('\nPlease enter the operator: ');
-    const operator = readline.prompt();
-
-    const count = printAndGetNum('\nHow many numbers do you want to ' + operator + ': ');
-    const array = getNumberArray(count);
-    const result = calculateResult(array, operator);
-
-    console.log('\nResult: ' + result);
-}
-
-function getNumberArray(count) {
-    let array = new Array(count);
-    for (let i = 0; i < count; i++) {
-        array[i] = printAndGetNum('\nPlease enter number ' + (i + 1) + ': ');
-    }
-    return array;
-}
-
-function calculateResult(array, op) {
-    let count = array.length;
-    let result = array[0];
-    for (let i = 1; i < count; i++) {
-        result = applyOperator(result, array[i], op);
-    }
-    return result;
-}
-
-function printAndGetNum(input) {
-    console.log(input);
-    const promptInput = readline.prompt();
-    const num = +promptInput;
-    if (isNaN(num)) {
-        console.log('\n ||That input was not a number, try again.||')
-        return printAndGetNum(input);
-    }
-    return num;
-}
-
-function applyOperator(arg1, arg2, op) {
-    switch (op) {
-        case '+':
-            return arg1 + arg2;
-        case '-':
-            return arg1 - arg2;
-        case '*':
-            return arg1 * arg2;
-        case '/':
-            return arg1 / arg2;
+function getCalculationMode() {
+    const mode = userInput.printAndGetInput(
+        `\nWhich calculator mode do you want?
+        1) Arithmetic
+        2) Vowel Counting`);
+    if (mode == ARITHMETIC_MODE || mode == VOWEL_COUNTING_MODE) {
+        return mode;
+    } else {
+        console.log('Please enter a number corresponding to one of the following modes.')
+        return getCalculationMode();
     }
 }
 
 printWelcomeMessage();
-let again = true;
-while (again) {
-    performOneCalculation();
+while (true) {
+    const calculationMode = getCalculationMode();
+    if (calculationMode == ARITHMETIC_MODE) {
+        arithmetic.performOneArithmeticCalculation();
+    } else if (calculationMode == VOWEL_COUNTING_MODE) {
+        vowelCounting.performOneVowelCountingCalculation();
+    }
 }
